@@ -1,0 +1,66 @@
+#include <iostream>
+#include <windows.h>  // For Windows specific SetCurrentDirectory function
+#include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
+void changeDirectory(const std::wstring& dirPath) {
+    if (SetCurrentDirectoryW(dirPath.c_str())) {
+        std::wcout << L"Changed to directory: " << dirPath << std::endl;
+    }
+    else {
+        std::wcerr << L"Error: Unable to change directory to " << dirPath << std::endl;
+    }
+}
+
+void moveForwardOneDirectory() {
+    fs::path currentPath = fs::current_path();
+    if (currentPath.has_parent_path()) {
+        fs::path parentPath = currentPath.parent_path();
+        changeDirectory(parentPath.wstring());
+    }
+    else {
+        std::wcerr << L"Error: No parent directory available." << std::endl;
+    }
+}
+
+void moveBackOneDirectory() {
+    fs::path currentPath = fs::current_path();
+    fs::path backPath = currentPath.parent_path();
+    changeDirectory(backPath.wstring());
+}
+
+void displayCurrentDirectory() {
+    fs::path currentPath = fs::current_path();
+    std::wcout << L"Current directory: " << currentPath << std::endl;
+}
+
+int main() {
+    std::wstring option;
+    bool running = true;
+
+    while (running) {
+        // Display the current directory
+        displayCurrentDirectory();
+
+        std::wcout << L"Enter an option (cd <path>, .. for back, quit to exit): ";
+        std::getline(std::wcin, option);
+
+        if (option == L"quit") {
+            running = false;
+        }
+        else if (option == L"..") {
+            moveBackOneDirectory();  // Move back one directory
+        }
+        else if (option.substr(0, 2) == L"cd") {
+            std::wstring dirPath = option.substr(3);  // Remove the "cd " part
+            changeDirectory(dirPath);  // Change to the specified directory
+        }
+        else {
+            std::wcerr << L"Invalid option." << std::endl;
+        }
+    }
+
+    return 0;
+}
