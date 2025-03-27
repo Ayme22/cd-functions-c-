@@ -66,3 +66,11 @@ Example: cd C:\Users\Username\Documents
 ..: Move up one directory.
 
 quit: Exit the program.
+
+Troubleshooting
+Unable to change to the directory: Ensure the path exists and is accessible. If the directory requires elevated permissions, run the program as an administrator.
+
+Program doesn't compile: Ensure you're using a C++17-compatible compiler, as std::filesystem requires this standard.
+
+License
+This tool is provided as-is, under the MIT License.
